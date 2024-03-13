@@ -1,7 +1,7 @@
-const field = document.getElementById("body");
 const radius = 200;
 const lineWidth = 3;
 const size = 10
+const vertixRadius = 18;
 
 const canvas = document.createElement('canvas');
 canvas.style.position = 'absolute';
@@ -41,7 +41,7 @@ const createVertixes = (count, radius, left) => {
         vertix.style.height = '1em';
         vertix.style.left = `${x}px`;
         vertix.style.top = `${y}px`;
-        field.appendChild(vertix);
+        document.body.appendChild(vertix);
         vertixes.push(vertix);
         angle += step;
     }
@@ -49,12 +49,11 @@ const createVertixes = (count, radius, left) => {
 }
 
 const createLine = (x1, y1, x2, y2, arrow) => {
-    const lineShorter = 18;
     const dx = x1 - x2;
     const dy= y1 - y2;
     const dLength = Math.sqrt(dx*dx + dy*dy);
-    const xShorter = lineShorter*dx/dLength;
-    const yShorter = lineShorter*dy/dLength;
+    const xShorter = vertixRadius*dx/dLength;
+    const yShorter = vertixRadius*dy/dLength;
     ctx.strokeStyle = 'black';
     ctx.lineWidth = lineWidth;
     ctx.moveTo(x1-xShorter, y1-yShorter);
@@ -113,17 +112,15 @@ const createGraphs = () => {
                 const resultNumber = number * k;
                 matrix[row][column] = resultNumber < 1 ? 0 : 1;
                 if(matrix[row][column] === 1) {
-                    const magicTop = 18;
-                    const magicLeft = 18;
                     if(row === column) {
-                        createEllipse(circleOfVertixes[row].offsetLeft+magicLeft,
-                            circleOfVertixes[row].offsetTop+magicTop, row);
+                        createEllipse(circleOfVertixes[row].offsetLeft+vertixRadius,
+                            circleOfVertixes[row].offsetTop+vertixRadius, row);
                     }
                     else {
-                        createLine(circleOfVertixes[row].offsetLeft+magicLeft,
-                            circleOfVertixes[row].offsetTop+magicTop,
-                            circleOfVertixes[column].offsetLeft+magicLeft,
-                            circleOfVertixes[column].offsetTop+magicTop,
+                        createLine(circleOfVertixes[row].offsetLeft+vertixRadius,
+                            circleOfVertixes[row].offsetTop+vertixRadius,
+                            circleOfVertixes[column].offsetLeft+vertixRadius,
+                            circleOfVertixes[column].offsetTop+vertixRadius,
                             i);
                     }
                 }
