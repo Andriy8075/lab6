@@ -8,6 +8,8 @@ const vertexRadius = 18;
 const distanceBetweenLines = 10;
 const textAreaFontSize = 20;
 const k = 0.745;
+const seedRandom = new Math.seedrandom(3401);
+
 
 const canvas = document.createElement('canvas');
 canvas.style.position = 'absolute';
@@ -117,7 +119,7 @@ const createGraphs = () => {
             matrix[row] = [];
             const columnsToLoop = i ? countOfVertexes : row+1;
             for(let column = 0; column < columnsToLoop; column++) {
-                const number = Math.random()*2;
+                const number = seedRandom()*2;
                 const resultNumber = number * k;
                 const oneOrZero = resultNumber < 1 ? 0 : 1;
                 matrix[row][column] = oneOrZero;
