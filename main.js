@@ -187,6 +187,6 @@ const firstDirectedGraphVertexes = createVertexes(countOfVertexes, radiusOfCircl
 const firstDirectedGraphMatrix = createMatrix(k, true, countOfVertexes);
 createTextAreaForMatrix(window.innerWidth * 3 / 4,
     distanceFromTopToFirstTextAreas + radiusOfCircleOfVertexes * 2, firstDirectedGraphMatrix);
-createGraphs(firstDirectedGraphMatrix, false, firstDirectedGraphVertexes);
+createGraphs(firstDirectedGraphMatrix, true, firstDirectedGraphVertexes);
 
 document.body.appendChild(canvas);
