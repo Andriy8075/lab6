@@ -4,7 +4,7 @@ const arrowLengthInLine = 16;
 const arrowLengthInEllipse = 16;
 const matrixLength = 10;
 const vertexRadius = 18;
-const radiusOfCircleOfVertexes = 150
+const radiusOfCircleOfVertexes = 200
 const distanceBetweenLinesInDirectedGraph = 10;
 const textAreaFontSize = 24;
 const countOfVertexes = 10;
@@ -19,7 +19,7 @@ canvas.style.position = 'absolute';
 canvas.style.top='0px';
 canvas.style.left='0px';
 canvas.width = window.innerWidth;
-canvas.height = 3*window.innerHeight;
+canvas.height = window.innerHeight;
 canvas.id = 'canvas';
 const ctx = canvas.getContext('2d');
 const createVertexes = (count, radius, left, top) => {
@@ -103,19 +103,14 @@ const createEllipse = (x, y, number) => {
     ctx.lineWidth = lineWidth;
 }
 
-const createMatrix = (k, directed, size) => {
+const createDirectedMatrix = (k, size) => {
     let matrix = [];
     for(let row = 0; row < size; row++) {
         matrix[row] = [];
-        const columnsToLoop = directed ? matrixLength : row + 1;
-        for (let column = 0; column < columnsToLoop; column++) {
+        for (let column = 0; column < matrixLength; column++) {
             const number = seedRandom() * 2;
             const resultNumber = number * k;
-            const oneOrZero = resultNumber < 1 ? 0 : 1;
-            matrix[row][column] = oneOrZero;
-            if (!directed) {
-                matrix[column][row] = oneOrZero;
-            }
+            matrix[row][column] = resultNumber < 1 ? 0 : 1;
         }
     }
     return matrix
@@ -149,7 +144,7 @@ const writeMatrixInTextArea = (textArea, matrix) => {
         textArea.textContent += `${column} `
     }
 }
-const createGraphs = (matrix, directed, vertexes) => {
+const createGraph = (matrix, directed, vertexes) => {
     const countOfVertexes = vertexes.length;
     for(let row = 0; row < vertexes.length; row++) {
         const columnsToLoop = directed ? countOfVertexes : row+1;
@@ -169,6 +164,16 @@ const createGraphs = (matrix, directed, vertexes) => {
         }
     }
 }
+
+const makeMatrixUndirected = (matrix) => {
+    const matrixSize = matrix.length
+    for(let i = 0; i < matrixSize; i++) {
+        for(let j = 0; j < matrixSize; j++) {
+            if(matrix[i][j]) matrix[j][i] = 1;
+        }
+    }
+    return matrix;
+}
 const createTextAreaForMatrix = (left, top, matrix) => {
     const firstDirectedGraphTextArea = createTextArea(left,
         top, countOfVertexes + 1, countOfVertexes * 3 - 6);
@@ -177,16 +182,19 @@ const createTextAreaForMatrix = (left, top, matrix) => {
 
 const firstUndirectedGraphVertexes = createVertexes(countOfVertexes, radiusOfCircleOfVertexes,
     window.innerWidth / 4, distanceFromTopToFirstGraphs);
-const firstUndirectedGraphMatrix = createMatrix(k, false, countOfVertexes);
-createTextAreaForMatrix(window.innerWidth / 4,
-    distanceFromTopToFirstTextAreas + radiusOfCircleOfVertexes * 2, firstUndirectedGraphMatrix);
-createGraphs(firstUndirectedGraphMatrix, false, firstUndirectedGraphVertexes);
-
 const firstDirectedGraphVertexes = createVertexes(countOfVertexes, radiusOfCircleOfVertexes,
     window.innerWidth * 3 / 4, distanceFromTopToFirstGraphs);
-const firstDirectedGraphMatrix = createMatrix(k, true, countOfVertexes);
+
+const firstDirectedGraphMatrix = createDirectedMatrix(k, countOfVertexes);
 createTextAreaForMatrix(window.innerWidth * 3 / 4,
     distanceFromTopToFirstTextAreas + radiusOfCircleOfVertexes * 2, firstDirectedGraphMatrix);
-createGraphs(firstDirectedGraphMatrix, true, firstDirectedGraphVertexes);
+createGraph(firstDirectedGraphMatrix, true, firstDirectedGraphVertexes);
+
+const firstUndirectedGraphMatrix = makeMatrixUndirected(firstDirectedGraphMatrix);
+createTextAreaForMatrix(window.innerWidth / 4,
+    distanceFromTopToFirstTextAreas + radiusOfCircleOfVertexes * 2, firstUndirectedGraphMatrix);
+createGraph(firstUndirectedGraphMatrix, false, firstUndirectedGraphVertexes);
+
+
 
 document.body.appendChild(canvas);
