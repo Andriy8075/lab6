@@ -71,7 +71,7 @@ const createVisitedVertexes = () => {
     visitedVertexes.style.left = `${left}px`;
     visitedVertexes.style.top = '600px';
     visitedVertexes.style.textAlign = 'center';
-    visitedVertexes.innerText = 'visitedVertexes:\n';
+    visitedVertexes.innerText = 'visited vertexes:\n';
     document.body.appendChild(visitedVertexes)
     return visitedVertexes;
 }
