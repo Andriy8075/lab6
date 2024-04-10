@@ -1,200 +1,27 @@
-const lineWidth = 1;
-const arrowWidth = 5;
-const arrowLengthInLine = 16;
-const arrowLengthInEllipse = 16;
-const matrixLength = 10;
-const vertexRadius = 18;
-const radiusOfCircleOfVertexes = 200
-const distanceBetweenLinesInDirectedGraph = 10;
-const textAreaFontSize = 24;
-const countOfVertexes = 10;
-const distanceFromTopToFirstGraphs = 90;
-const distanceFromTopToFirstTextAreas = 190
-const k = 0.745;
-const seedRandom = new Math.seedrandom(3401);
+import {countOfVertexes, k, distanceFromTopToFirstTextAreas} from "./data.js";
+import {createGraph, vertexes} from "./createGraph.js";
+import {createDirectedMatrix, createTextAreaForMatrix} from "./createMatrix.js";
+import {createButton, writeSymbolDefinition} from "./interface.js";
+import {BFSFunction} from "./BFS.js";
+import {DFSFunction} from "./DFS.js";
 
-
-const canvas = document.createElement('canvas');
-canvas.style.position = 'absolute';
-canvas.style.top='0px';
-canvas.style.left='0px';
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-canvas.id = 'canvas';
-const ctx = canvas.getContext('2d');
-const createVertexes = (count, radius, left, top) => {
-    const vertexes = [];
-    const step = 2*Math.PI / count;
-    let angle = 0;
-    for(let i = 0; i < count; i++) {
-        const vertex = document.createElement('h1');
-        let x = left + Math.cos(angle)*radius;
-        let y = top + radius + Math.sin(angle)*radius;
-        vertex.innerHTML = (i+1).toString();
-        vertex.style.border= '3px solid #000';
-        vertex.style.textAlign = 'center';
-        vertex.style.borderRadius = '100%';
-        vertex.style.position = 'absolute';
-        vertex.style.width = '32px';
-        vertex.style.height = '32px';
-        vertex.style.left = `${x}px`;
-        vertex.style.top = `${y}px`;
-        document.body.appendChild(vertex);
-        vertexes.push(vertex);
-        angle += step;
-    }
-    return vertexes
+const texDivs = document.getElementsByClassName('textDiv');
+for(const textDiv of texDivs) {
+    textDiv.style.width = `${window.innerWidth /3}px`;
 }
 
-const createLine = (x1, y1, x2, y2, arrow) => {
-    const dx = x1 - x2;
-    const dy= y1 - y2;
-    const lineLength = Math.sqrt(dx*dx + dy*dy);
-    const lineCos = dx/lineLength;
-    const lineSin = dy/lineLength;
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = lineWidth;
-    if(!arrow) {
-        const xForwardShift = vertexRadius*lineCos;
-        const yForwardShift = vertexRadius*lineSin;
-        ctx.moveTo(x1-xForwardShift, y1-yForwardShift);
-        ctx.lineTo(x2+xForwardShift, y2+yForwardShift);
-        ctx.stroke();
-    }
-    else {
-        const xForwardShift = (vertexRadius*Math.cos
-        (Math.asin(distanceBetweenLinesInDirectedGraph/vertexRadius)))*lineCos;
-        const yForwardShift = (vertexRadius*Math.sin
-        (Math.acos(distanceBetweenLinesInDirectedGraph/vertexRadius)))*lineSin;
-        const xSideShift = distanceBetweenLinesInDirectedGraph*lineSin;
-        const ySideShift = distanceBetweenLinesInDirectedGraph*lineCos;
-        let lastPositionX = x2+xForwardShift+arrowLengthInLine*lineCos+xSideShift;
-        let lastPositionY= y2+yForwardShift+arrowLengthInLine*lineSin-ySideShift;
-        ctx.moveTo(x1-xForwardShift+xSideShift, y1-yForwardShift-ySideShift);
-        ctx.lineTo(lastPositionX, lastPositionY);
-        ctx.stroke();
-        for(let i = arrowWidth; i > 0; i--) {
-            ctx.beginPath();
-            ctx.moveTo(lastPositionX, lastPositionY);
-            ctx.lineWidth = i;
-            lastPositionX = x2+xForwardShift+xSideShift+arrowLengthInLine*lineCos-arrowLengthInLine*lineCos/i;
-            lastPositionY = y2+yForwardShift-ySideShift+arrowLengthInLine*lineSin-arrowLengthInLine*lineSin/i;
-            ctx.lineTo(lastPositionX, lastPositionY);
-            ctx.stroke();
-        }
-    }
-}
+const matrix = createDirectedMatrix(k, countOfVertexes);
+createTextAreaForMatrix(window.innerWidth * 3/6,
+    distanceFromTopToFirstTextAreas, matrix);
+createGraph(matrix, vertexes);
 
-const createEllipse = (x, y, number) => {
-    const extraAngle = 0.28
-    ctx.beginPath();
-    ctx.lineWidth = lineWidth;
-    ctx.ellipse(x, y, 50, 10, Math.PI*number/5,
-        -Math.PI/2+extraAngle, Math.PI/2-extraAngle-0.05*lineWidth*2);
-    ctx.stroke();
-    for(let i = arrowWidth; i > 0; i--) {
-        ctx.beginPath();
-        ctx.lineWidth = i;
-        ctx.ellipse(x, y, 50, 10, Math.PI*number/5,
-            Math.PI/2 - extraAngle - arrowLengthInEllipse*(i)/(64*arrowWidth),
-            Math.PI/2 - extraAngle - arrowLengthInEllipse*(i-1)/(64*arrowWidth));
-        ctx.stroke();
-    }
-    ctx.lineWidth = lineWidth;
-}
+const BFSButton = createButton(window.innerWidth /6, 580, 'BFS', 'orange');
+const DFSButton = createButton(window.innerWidth /6, 700,'DFS', 'lightblue');
 
-const createDirectedMatrix = (k, size) => {
-    let matrix = [];
-    for(let row = 0; row < size; row++) {
-        matrix[row] = [];
-        for (let column = 0; column < matrixLength; column++) {
-            const number = seedRandom() * 2;
-            const resultNumber = number * k;
-            matrix[row][column] = resultNumber < 1 ? 0 : 1;
-        }
-    }
-    return matrix
-}
+writeSymbolDefinition('yellow', ' - closed');
+writeSymbolDefinition('green', ' - opened');
 
-const createTextArea = (left, top, rows, cols) => {
-    const textArea = document.createElement('textarea');
-    textArea.style.position = 'absolute';
-    textArea.rows = rows;
-    textArea.cols = cols;
-    textArea.style.top = `${top}px`;
-    textArea.style.left = `${left - textArea.cols*textAreaFontSize/4}px`;
-    textArea.style.fontSize = `${textAreaFontSize}px`;
-    document.body.appendChild(textArea)
-    return textArea
-}
-
-const writeMatrixInTextArea = (textArea, matrix) => {
-    const matrixLength = matrix.length;
-    for(let row = 0; row < matrixLength; row++) {
-        textArea.textContent += `${row+1}. `;
-        if(row < 9) textArea.textContent += ' '
-        for(let column = 0; column < matrixLength; column++) {
-            if(column > 9) textArea.textContent += ' '
-            textArea.textContent += `${matrix[row][column]} `;
-        }
-        textArea.textContent += `\n`;
-    }
-    textArea.textContent += '    '
-    for(let column = 1; column <= matrixLength; column++) {
-        textArea.textContent += `${column} `
-    }
-}
-const createGraph = (matrix, directed, vertexes) => {
-    const countOfVertexes = vertexes.length;
-    for(let row = 0; row < vertexes.length; row++) {
-        const columnsToLoop = directed ? countOfVertexes : row+1;
-        for(let column = 0; column < columnsToLoop; column++) {
-            if (matrix[row][column] === 1) {
-                if (row === column) {
-                    createEllipse(vertexes[row].offsetLeft + vertexRadius,
-                        vertexes[row].offsetTop + vertexRadius, row);
-                } else {
-                    createLine(vertexes[row].offsetLeft + vertexRadius,
-                        vertexes[row].offsetTop + vertexRadius,
-                        vertexes[column].offsetLeft + vertexRadius,
-                        vertexes[column].offsetTop + vertexRadius,
-                        directed);
-                }
-            }
-        }
-    }
-}
-
-const makeMatrixUndirected = (matrix) => {
-    const matrixSize = matrix.length
-    for(let i = 0; i < matrixSize; i++) {
-        for(let j = 0; j < matrixSize; j++) {
-            if(matrix[i][j]) matrix[j][i] = 1;
-        }
-    }
-    return matrix;
-}
-const createTextAreaForMatrix = (left, top, matrix) => {
-    const firstDirectedGraphTextArea = createTextArea(left,
-        top, countOfVertexes + 1, countOfVertexes * 3 - 6);
-    writeMatrixInTextArea(firstDirectedGraphTextArea, matrix);
-}
-
-const firstUndirectedGraphVertexes = createVertexes(countOfVertexes, radiusOfCircleOfVertexes,
-    window.innerWidth / 4, distanceFromTopToFirstGraphs);
-const firstDirectedGraphVertexes = createVertexes(countOfVertexes, radiusOfCircleOfVertexes,
-    window.innerWidth * 3 / 4, distanceFromTopToFirstGraphs);
-
-const firstDirectedGraphMatrix = createDirectedMatrix(k, countOfVertexes);
-createTextAreaForMatrix(window.innerWidth * 3 / 4,
-    distanceFromTopToFirstTextAreas + radiusOfCircleOfVertexes * 2, firstDirectedGraphMatrix);
-createGraph(firstDirectedGraphMatrix, true, firstDirectedGraphVertexes);
-
-const firstUndirectedGraphMatrix = makeMatrixUndirected(firstDirectedGraphMatrix);
-createTextAreaForMatrix(window.innerWidth / 4,
-    distanceFromTopToFirstTextAreas + radiusOfCircleOfVertexes * 2, firstUndirectedGraphMatrix);
-createGraph(firstUndirectedGraphMatrix, false, firstUndirectedGraphVertexes);
+BFSButton.addEventListener('click', BFSFunction(matrix, DFSButton, BFSButton));
+DFSButton.addEventListener('click', DFSFunction(matrix, BFSButton, DFSButton));
 
 
-
-document.body.appendChild(canvas);

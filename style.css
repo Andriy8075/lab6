@@ -1,13 +1,9 @@
 
-.createGraph {
-    font-size: 2em;
+.texts {
+    display: flex;
+    flex-direction: row;
 }
 
-.graphDiv {
-    display: flex;
-    position: sticky;
-    justify-content: center;
-    align-items: center;
-    float: left;
-    width: 50%;
+.textDiv {
+    text-align: center;
 }
