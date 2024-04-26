@@ -1,4 +1,5 @@
-import {countOfVertexes, matrixLength, seedRandom, textAreaFontSize, } from "./data.js";
+import {countOfVertexes, matrixLength, seedRandom,
+    textAreaFontSize, } from "./data.js";
 
 const createDirectedMatrix = (k, size) => {
     let matrix = [];
@@ -50,4 +51,73 @@ const createTextAreaForMatrix = (left, top, matrix) => {
     textArea.readOnly = true;
 }
 
-export {createDirectedMatrix, createTextAreaForMatrix, createTextArea, writeMatrixInTextArea}
+const createMatrix = (callback) => {
+    const newMatrix = [];
+    for(let row = 0; row < matrixLength; row++) {
+        newMatrix[row] = [];
+        for (let column = 0; column < matrixLength; column++) {
+            newMatrix[row][column] = callback(row, column, newMatrix);
+        }
+    }
+    return newMatrix;
+}
+
+const createMatrixB = () => createMatrix(
+    () => seedRandom() * 2,
+)
+
+const createMatrixC = ({matrixA, matrixB}) => createMatrix(
+    (row, column) => Math.ceil(matrixB[row][column] *
+        100 * matrixA[row][column]), matrixA, matrixB
+)
+
+const createMatrixD = (matrixC) => createMatrix(
+    (row, column) => matrixC[row][column] ? 1 : 0,
+
+)
+
+const createMatrixH = (matrixD) => createMatrix(
+    (row, column) =>
+        matrixD[row][column] === matrixD[column][row] ? 0 : 1
+)
+
+const createMatrixTr = () => createMatrix(
+    (row, column) => row < column ? 1 : 0
+)
+
+const createMatrixW = ({matrixC, matrixD, matrixH, matrixTr}) =>
+    createMatrix((row, column, matrixW) =>  {
+        const newValue = (matrixD[row][column] + matrixH[row][column] *
+                matrixTr[row][column])
+            * matrixC[row][column];
+        return matrixW[column] ? matrixW[column][row] || newValue : newValue;
+    }
+)
+
+const createFinalMatrixW = (matrixA) => {
+    const matrixB = createMatrixB();
+    const matrixC = createMatrixC({matrixA, matrixB});
+    const matrixD = createMatrixD(matrixC);
+    const matrixH = createMatrixH(matrixD);
+    const matrixTr = createMatrixTr();
+    const matrixW = createMatrixW({
+        matrixC, matrixD, matrixH, matrixTr
+    });
+    return matrixW;
+}
+
+const makeMatrixUndirected = (matrix) => createMatrix(
+    (row, column) => column > row ?
+        matrix[row][column] : matrix[column][row]
+)
+
+const deleteSelfEdges = (matrix) => createMatrix(
+    (row, column) => row === column ?
+        0 : matrix[row][column]
+)
+
+export {
+    createDirectedMatrix, createTextAreaForMatrix, createTextArea,
+    writeMatrixInTextArea, createFinalMatrixW, makeMatrixUndirected,
+    deleteSelfEdges
+}

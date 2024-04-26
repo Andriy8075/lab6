@@ -1,5 +1,4 @@
 import {countOfVertexes} from "./data.js";
-import {createTextArea, writeMatrixInTextArea} from "./createMatrix.js";
 
 const createButton = (left, top,  label, color) => {
     const button = document.createElement('button');
@@ -16,43 +15,6 @@ const createButton = (left, top,  label, color) => {
     return button;
 }
 
-const left = 700;
-
-const createTextForColors = (top, text) => {
-    const info = document.createElement('h1');
-    document.body.appendChild(info);
-    info.style.position = 'absolute';
-    info.cols = 32;
-    info.rows = 1;
-    info.style.top = `${top}px`;
-    const fontSize = 32;
-    info.style.fontSize = `${fontSize}px`;
-    info.style.left = `${left+50}px`;
-    info.innerHTML = text;
-}
-
-const createColor = (top, color) => {
-    const text = document.createElement('h1');
-    text.innerHTML = ' ';
-    text.style.backgroundColor = color;
-    text.style.textAlign = 'center';
-    text.style.borderRadius = '100%';
-    text.style.position = 'absolute';
-    text.style.width = '32px';
-    text.style.height = '32px';
-    text.style.left = `${left}px`;
-    text.style.top = `${top}px`;
-    document.body.appendChild(text);
-}
-
-let top = 420;
-
-const writeSymbolDefinition = (color, text) => {
-    createColor(top, color);
-    createTextForColors(top, text);
-    top += 50;
-}
-
 const writeDone = () => {
     const text = document.createElement('h1');
     text.innerHTML = 'Done!';
@@ -65,17 +27,6 @@ const writeDone = () => {
     document.body.appendChild(text);
 }
 
-const createVisitedVertexes = () => {
-    const visitedVertexes = document.createElement('h1');
-    visitedVertexes.style.position = 'absolute';
-    visitedVertexes.style.left = `${left}px`;
-    visitedVertexes.style.top = '600px';
-    visitedVertexes.style.textAlign = 'center';
-    visitedVertexes.innerText = 'visited vertexes:\n';
-    document.body.appendChild(visitedVertexes)
-    return visitedVertexes;
-}
-
 const createMatrixOfZeros = (length) => {
     let matrix = [];
     for (let i = 0; i < length; i++) {
@@ -86,15 +37,57 @@ const createMatrixOfZeros = (length) => {
     }
     return matrix;
 }
-const createTraversalTreeMatrix = (left, top) => {
-    const matrixOfZeros = createMatrixOfZeros(10)
-    const textArea = createTextArea(left,
-        top, countOfVertexes + 1, countOfVertexes * 3 - 6);
-    console.log(matrixOfZeros)
-    writeMatrixInTextArea(textArea, matrixOfZeros);
-    textArea.style.resize = 'none';
-    textArea.readOnly = true;
-    return {matrixOfZeros, textArea};
+
+const createTable = (left, top, matrix, label, idText) => {
+    const mainDiv = document.createElement('div');
+    const textDiv = document.createElement('div');
+
+    const table = document.createElement('table');
+    const tblBody = document.createElement("tbody");
+    mainDiv.style.position = 'absolute';
+    mainDiv.style.left = `${left}px`;
+    mainDiv.style.top = `${top}px`;
+    table.style.border = '1px solid black';
+
+    const topTr = document.createElement('tr');
+    for(let i = 0; i <= countOfVertexes; i++) {
+        const td = document.createElement('td');
+        td.textContent = `${i === 0 ? '' : i}`;
+        td.style.border = '1px solid black'
+        topTr.appendChild(td);
+    }
+    table.appendChild(topTr)
+
+    for(let i = 0; i < countOfVertexes; i++) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.textContent = `${i+1}`;
+        td.style.border = '1px solid black'
+        tr.appendChild(td)
+        for(let j = 0; j < countOfVertexes; j++) {
+            const td =
+                document.createElement('td');
+            td.textContent = `${matrix[i][j]}`;
+            td.style.border = '1px solid black';
+            td.id = `${idText}${i}${j}`
+            tr.appendChild(td);
+            td.style.width = '30px';
+        }
+        table.appendChild(tr)
+    }
+
+    table.style.fontSize = '20px';
+
+    const text = document.createElement('h1');
+    text.textContent = label;
+
+    mainDiv.appendChild(textDiv);
+    mainDiv.appendChild(table);
+    textDiv.appendChild(text);
+    textDiv.style.display = 'flex';
+    textDiv.style.justifyContent = 'center';
+
+    document.body.appendChild(mainDiv);
 }
 
-export {writeSymbolDefinition, createButton, writeDone, createVisitedVertexes, createTraversalTreeMatrix}
+export {createButton, writeDone, createTable}

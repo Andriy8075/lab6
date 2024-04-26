@@ -1,10 +1,6 @@
 import {
-    arrowLengthInEllipse,
-    arrowLengthInLine,
-    arrowWidth, countOfVertexes,
-    ctx,
-    distanceBetweenLinesInDirectedGraph, distanceFromTopToFirstGraphs,
-    lineWidth, radiusOfCircleOfVertexes,
+    arrowLengthInEllipse, arrowWidth, countOfVertexes, ctx,
+    distanceFromTopToFirstGraphs, lineWidth, radiusOfCircleOfVertexes,
     vertexRadius
 } from "./data.js";
 
@@ -40,26 +36,12 @@ const createLine = (x1, y1, x2, y2, color, width) => {
     const lineSin = dy/lineLength;
     ctx.strokeStyle = color;
     ctx.lineWidth = width;
-    const xForwardShift = (vertexRadius*Math.cos
-    (Math.asin(distanceBetweenLinesInDirectedGraph/vertexRadius)))*lineCos;
-    const yForwardShift = (vertexRadius*Math.sin
-    (Math.acos(distanceBetweenLinesInDirectedGraph/vertexRadius)))*lineSin;
-    const xSideShift = distanceBetweenLinesInDirectedGraph*lineSin;
-    const ySideShift = distanceBetweenLinesInDirectedGraph*lineCos;
-    let lastPositionX = x2+xForwardShift+arrowLengthInLine*lineCos+xSideShift;
-    let lastPositionY= y2+yForwardShift+arrowLengthInLine*lineSin-ySideShift;
-    ctx.moveTo(x1-xForwardShift+xSideShift, y1-yForwardShift-ySideShift);
-    ctx.lineTo(lastPositionX, lastPositionY);
+    const xForwardShift = vertexRadius*lineCos;
+    const yForwardShift = vertexRadius*lineSin;
+    ctx.beginPath()
+    ctx.moveTo(x1-xForwardShift, y1-yForwardShift);
+    ctx.lineTo(x2+xForwardShift, y2+yForwardShift);
     ctx.stroke();
-    for(let i = arrowWidth; i > 0; i--) {
-        ctx.beginPath();
-        ctx.moveTo(lastPositionX, lastPositionY);
-        ctx.lineWidth = i;
-        lastPositionX = x2+xForwardShift+xSideShift+arrowLengthInLine*lineCos-arrowLengthInLine*lineCos/i;
-        lastPositionY = y2+yForwardShift-ySideShift+arrowLengthInLine*lineSin-arrowLengthInLine*lineSin/i;
-        ctx.lineTo(lastPositionX, lastPositionY);
-        ctx.stroke();
-    }
 }
 
 const createEllipse = (x, y, number) => {
@@ -107,14 +89,14 @@ const lightVertex = (vertexNumber, color) => {
     vertex.style.backgroundColor = color;
 }
 
-const lightEdge = (vertexNumberFrom, vertexNumberTo, color) => {
+const lightEdge = (vertexNumberFrom, vertexNumberTo, color, width) => {
     const vertexFrom = vertexes[vertexNumberFrom];
     const vertexTo = vertexes[vertexNumberTo];
     const fromX = vertexFrom.offsetLeft + vertexRadius;
     const fromY = vertexFrom.offsetTop + vertexRadius;
     const toX = vertexTo.offsetLeft + vertexRadius;
     const toY = vertexTo.offsetTop + vertexRadius;
-    createLine(fromX, fromY, toX, toY, color, 2);
+    createLine(fromX, fromY, toX, toY, color, width);
 }
 
 export {createGraph, vertexes, lightVertex, lightEdge}
