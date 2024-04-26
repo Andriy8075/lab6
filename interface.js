@@ -17,7 +17,7 @@ const createButton = (left, top,  label, color) => {
 
 const writeSumOfValues = (sumOfValues) => {
     const text = document.createElement('h1');
-    text.innerHTML = `Sum of values: ${sumOfValues}`;
+    text.innerHTML = `Сума ваг: ${sumOfValues}`;
     text.style.textAlign = 'center';
     text.style.position = 'absolute';
     text.style.height = '32px';
