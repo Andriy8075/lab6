@@ -15,27 +15,15 @@ const createButton = (left, top,  label, color) => {
     return button;
 }
 
-const writeDone = () => {
+const writeSumOfValues = (sumOfValues) => {
     const text = document.createElement('h1');
-    text.innerHTML = 'Done!';
+    text.innerHTML = `Sum of values: ${sumOfValues}`;
     text.style.textAlign = 'center';
     text.style.position = 'absolute';
-    text.style.width = '32px';
     text.style.height = '32px';
     text.style.left = `${window.innerWidth / 6}px`;
     text.style.top = `650px`;
     document.body.appendChild(text);
-}
-
-const createMatrixOfZeros = (length) => {
-    let matrix = [];
-    for (let i = 0; i < length; i++) {
-        matrix.push([]);
-        for (let j = 0; j < length; j++) {
-            matrix[i][j] = 0;
-        }
-    }
-    return matrix;
 }
 
 const createTable = (left, top, matrix, label, idText) => {
@@ -90,4 +78,4 @@ const createTable = (left, top, matrix, label, idText) => {
     document.body.appendChild(mainDiv);
 }
 
-export {createButton, writeDone, createTable}
+export {createButton, writeSumOfValues, createTable}

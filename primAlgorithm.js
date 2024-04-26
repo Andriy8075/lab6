@@ -1,6 +1,6 @@
 import { countOfVertexes, colorOfCellInTable } from './data.js';
 import { lightEdge, lightVertex } from "./createGraph.js";
-import { writeDone } from "./interface.js";
+import { writeSumOfValues } from "./interface.js";
 
 const vertexColor = 'green';
 const edgeColor = 'red';
@@ -13,6 +13,8 @@ const openVertex = ({from, to}) => {
     if(typeof from === 'number') lightEdge(from, to, edgeColor, edgeWidth);
     newVertexes[to] = false;
 }
+
+let sumOfValues = 0;
 
 const primAlgorithm = (edgeValuesMatrix, primButton) => {
     let minValue = 0;
@@ -37,6 +39,7 @@ const primAlgorithm = (edgeValuesMatrix, primButton) => {
     }
     if(minValue) {
         openVertex(minEdge);
+        sumOfValues += minValue;
         for(let vertex = 0; vertex < countOfVertexes; vertex++) {
             if(newVertexes[vertex]) continue;
             const td1 = document.getElementById(
@@ -55,7 +58,7 @@ const primAlgorithm = (edgeValuesMatrix, primButton) => {
         openVertex({to: vertex});
         return;
     }
-    writeDone();
+    writeSumOfValues(sumOfValues);
     primButton.style.display = 'none';
 }
 
