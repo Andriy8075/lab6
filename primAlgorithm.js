@@ -1,4 +1,4 @@
-import { countOfVertexes, colorOfCellInTable } from './data.js';
+import { countOfVertexes, colorOfCellInTable, activeColor } from './data.js';
 import { lightEdge, lightVertex } from "./createGraph.js";
 import { writeSumOfValues } from "./interface.js";
 
@@ -8,19 +8,27 @@ const edgeWidth = 3;
 
 const newVertexes = Array(countOfVertexes).fill(true);
 
+const changeColor = (from, to, color) => {
+    const edge = document.getElementById(`tableId${from}${to}`);
+    edge.style.backgroundColor = color;
+}
 const openVertex = ({from, to}) => {
     lightVertex(to, vertexColor);
     if(typeof from === 'number') lightEdge(from, to, edgeColor, edgeWidth);
     newVertexes[to] = false;
 }
 
+let EdgeToMakeGreyOnNextIteration = null;
 let sumOfValues = 0;
 
 const primAlgorithm = (edgeValuesMatrix, primButton) => {
+    if(EdgeToMakeGreyOnNextIteration) {
+        changeColor(EdgeToMakeGreyOnNextIteration.from, EdgeToMakeGreyOnNextIteration.to, colorOfCellInTable)
+    }
     let minValue = 0;
     const minEdge = {
-        from: -1,
-        to: -1
+        from: undefined,
+        to: undefined
     };
     for(let fromVertex = 0; fromVertex < countOfVertexes;
         fromVertex++) {
@@ -42,15 +50,11 @@ const primAlgorithm = (edgeValuesMatrix, primButton) => {
         sumOfValues += minValue;
         for(let vertex = 0; vertex < countOfVertexes; vertex++) {
             if(newVertexes[vertex]) continue;
-            const td1 = document.getElementById(
-                `tableId${vertex}${minEdge.to}`
-            );
-            td1.style.backgroundColor = colorOfCellInTable;
-            const td2 = document.getElementById(
-                `tableId${minEdge.to}${vertex}`
-            );
-            td2.style.backgroundColor = colorOfCellInTable;
+            changeColor(vertex, minEdge.to, colorOfCellInTable);
+            changeColor(minEdge.to, vertex, colorOfCellInTable);
         }
+        changeColor(minEdge.from, minEdge.to, activeColor);
+        EdgeToMakeGreyOnNextIteration = minEdge;
         return;
     }
     for(let vertex = 0; vertex < countOfVertexes; vertex++) {
