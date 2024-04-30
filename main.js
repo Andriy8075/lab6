@@ -13,8 +13,6 @@ const undirectedMatrix = makeMatrixUndirected(directedMatrix);
 const matrixA = deleteSelfEdges(undirectedMatrix);
 
 const valueMatrix = createFinalMatrixW(matrixA);
-console.table(valueMatrix);
-console.table(matrixA);
 
 createGraph(matrixA, vertexes)
 

@@ -16,6 +16,7 @@ const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 const colorOfCellInTable = 'grey';
+const activeColor = 'red'
 
 canvas.style.position = 'absolute';
 canvas.style.top='0px';
@@ -29,5 +30,5 @@ canvas.style.height = `${window.innerHeight}px`;
 canvas.id = 'canvas';
 
 export {lineWidth, ctx, k, seedRandom, vertexRadius, textAreaFontSize, radiusOfCircleOfVertexes,
-    distanceFromTopToFirstTextAreas, distanceFromTopToFirstGraphs,
+    distanceFromTopToFirstTextAreas, distanceFromTopToFirstGraphs, activeColor,
     countOfVertexes, arrowLengthInLine, arrowLengthInEllipse, arrowWidth, matrixLength, colorOfCellInTable}

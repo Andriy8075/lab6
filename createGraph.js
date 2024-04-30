@@ -3,9 +3,10 @@ import {
     distanceFromTopToFirstGraphs, lineWidth, radiusOfCircleOfVertexes,
     vertexRadius
 } from "./data.js";
+import {createList} from "./list.js";
 
 const createVertexes = (count, radius, left, top) => {
-    const vertexes = [];
+    const vertexes = createList();
     const step = 2*Math.PI / count;
     let angle = 0;
     for(let i = 0; i < count; i++) {
@@ -68,13 +69,13 @@ const createGraph = (matrix, vertexes) => {
         for(let column = 0; column < countOfVertexes; column++) {
             if (matrix[row][column] === 1) {
                 if (row === column) {
-                    createEllipse(vertexes[row].offsetLeft + vertexRadius,
+                    createEllipse(vertexes.get(row).offsetLeft + vertexRadius,
                         vertexes[row].offsetTop + vertexRadius, row);
                 } else {
-                    createLine(vertexes[row].offsetLeft + vertexRadius,
-                        vertexes[row].offsetTop + vertexRadius,
-                        vertexes[column].offsetLeft + vertexRadius,
-                        vertexes[column].offsetTop + vertexRadius, `#${'40'.repeat(3)}`, 1);
+                    createLine(vertexes.get(row).offsetLeft + vertexRadius,
+                        vertexes.get(row).offsetTop + vertexRadius,
+                        vertexes.get(column).offsetLeft + vertexRadius,
+                        vertexes.get(column).offsetTop + vertexRadius, `#${'40'.repeat(3)}`, 1);
                 }
             }
         }
@@ -85,13 +86,13 @@ const vertexes = createVertexes(countOfVertexes, radiusOfCircleOfVertexes,
     window.innerWidth / 6, distanceFromTopToFirstGraphs);
 
 const lightVertex = (vertexNumber, color) => {
-    const vertex = vertexes[vertexNumber];
+    const vertex = vertexes.get(vertexNumber);
     vertex.style.backgroundColor = color;
 }
 
 const lightEdge = (vertexNumberFrom, vertexNumberTo, color, width) => {
-    const vertexFrom = vertexes[vertexNumberFrom];
-    const vertexTo = vertexes[vertexNumberTo];
+    const vertexFrom = vertexes.get(vertexNumberFrom);
+    const vertexTo = vertexes.get(vertexNumberTo);
     const fromX = vertexFrom.offsetLeft + vertexRadius;
     const fromY = vertexFrom.offsetTop + vertexRadius;
     const toX = vertexTo.offsetLeft + vertexRadius;

@@ -31,7 +31,6 @@ const createTable = (left, top, matrix, label, idText) => {
     const textDiv = document.createElement('div');
 
     const table = document.createElement('table');
-    const tblBody = document.createElement("tbody");
     mainDiv.style.position = 'absolute';
     mainDiv.style.left = `${left}px`;
     mainDiv.style.top = `${top}px`;
